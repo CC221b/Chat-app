@@ -1,5 +1,10 @@
-# from flask import Flask
+from flask import Flask
+server = Flask(__name__)
 
-# app = Flask(_name_)
+@server.route("/register")
+def register():
+   return "register"
 
-# @app.route("/")
+
+if __name__ == "__main__":
+   server.run(host='0.0.0.0')
