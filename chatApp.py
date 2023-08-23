@@ -1,5 +1,5 @@
 from flask import Flask,redirect, request, render_template
-import os.path
+import os
 server = Flask(__name__)
 import csv
 
@@ -49,12 +49,18 @@ def loginPage():
 @server.route('/lobby', methods =["GET", "POST"])
 def room():
    if request.method == 'POST':
-        name = request.form["new_room"] 
-        path = './rooms/example.txt'
-        check_file = os.path.isfile(path)  
-        file1 = open(path, "w")
-        return name
-   return render_template('lobby.html')
+        new_room = request.form["new_room"] 
+        path = "rooms/" + new_room + ".txt"
+        if os.path.isfile(path):
+           return "Error in rhe room name!"
+        else:
+           with open(path, 'w') as f:
+              f.write("welcome")  
+           rooms = os.listdir('rooms/')
+               
+   return render_template('lobby.html', room_names=rooms)
+
+
 
    
 
