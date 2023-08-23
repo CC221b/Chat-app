@@ -9,6 +9,9 @@ def register():
         "password": request.form.get('password'),
    }
 
+@server.route('/lobby')
+def room():
+   return render_template('lobby.html')
 
 @server.route('/register' , methods=['GET', 'POST'])
 def login():
