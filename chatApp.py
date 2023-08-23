@@ -26,21 +26,24 @@ def read_to_file(data):
 
 @server.route('/register' , methods=['GET', 'POST'])
 def homePage():
-   name = request.form['username'],
-   password = request.form['password']
-   if request.method == "POST":
-         if read_to_file(name):
-            data=[name, password]
-            write_to_file(data)
-         else:
-            return render_template("login.html")
+    if request.method == "POST":
+      name = request.form['username'],
+      password = request.form['password']
+      if read_to_file(name):
+         data=[name, password]
+         write_to_file(data)
+      else:
+         return render_template("login.html")
+    return render_template('register.html')
 
 
 
-@server.route('/register' , methods=['GET', 'POST'])
-def login():
-  name = request.form['username'],
-  password = request.form['password']
+@server.route('/login' , methods=['GET', 'POST'])
+def loginPage():
+  if request.method == 'POST':
+       name = request.form['username'],
+       password = request.form['password']
+  return render_template('login.html')
 
 
 @server.route('/lobby', methods =["GET", "POST"])
