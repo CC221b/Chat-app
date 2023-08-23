@@ -10,11 +10,11 @@ def write_to_file(data):
    with open(filename, 'w') as file:
     for header in header:
         file.write(str(header)+', ')
-    file.write('n')
+    file.write('\n')
     for row in data:
         for x in row:
             file.write(str(x)+', ')
-        file.write('n')
+        file.write('\n')
 
 def read_to_file(data):
    with open('users.csv', 'r') as file:
