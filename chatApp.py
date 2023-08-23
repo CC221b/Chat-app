@@ -1,34 +1,48 @@
+from flask import Flask,redirect, request, render_template
 from flask import Flask, request, render_template
 import os.path
 server = Flask(__name__)
+import csv
 
 
-# @server.route('/register' , methods=['GET', 'POST'])
-# def register():
-#    name = request.form('name')
-#    user = {
-#         "name": request.form.get('name'),
-#         "password": request.form.get('password'),
-#    }
+def write_to_file(data):
+   header = ['username' , 'password']
+   filename = 'users.csv'
+   with open(filename, 'w') as file:
+    for header in header:
+        file.write(str(header)+', ')
+    file.write('n')
+    for row in data:
+        for x in row:
+            file.write(str(x)+', ')
+        file.write('n')
 
+def read_to_file(data):
+   with open('users.csv', 'r') as file:
+      reader = csv.DictReader(file)
+      for row in reader:
+         if row.username == data:
+            return False 
+      return True
 
-# @server.route('/register' , methods=['GET', 'POST'])
-# def login():
-
-#    username = request.args.get('username')
-#    password = request.args.get('password')
-
-@server.route('/register')
+@server.route('/register' , methods=['GET', 'POST'])
 def homePage():
-   return render_template('register.html')
+   name = request.form['username'],
+   password = request.form['password']
+   if request.method == "POST":
+         if read_to_file(name):
+            data=[name, password]
+            write_to_file(data)
+         else:
+            return render_template("login.html")
 
-@server.route('/login')
-def loginPage():
-   return render_template('login.html')
 
-# @server.route('/logout')
-# def homePage():
-#    return render_template('register.html')
+
+@server.route('/register' , methods=['GET', 'POST'])
+def login():
+  name = request.form['username'],
+  password = request.form['password']
+
 
 @server.route('/lobby', methods =["GET", "POST"])
 def room():
