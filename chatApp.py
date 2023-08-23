@@ -1,5 +1,4 @@
 from flask import Flask,redirect, request, render_template
-from flask import Flask, request, render_template
 import os.path
 server = Flask(__name__)
 import csv
