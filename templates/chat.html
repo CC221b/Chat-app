@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
-
+    <link rel="stylesheet" href="../static/login.css">
 </head>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
       function room() {
@@ -13,14 +14,22 @@
         if (room=="") room = "general";
         return "/api/chat/"+room;
       }
+
+  function updateChat() {
+
+    $.get(room(), function(data) {
+      var chatbox = $("#chatbox");
+      chatbox.empty();
+
+      data.forEach(function(message) {
+        var div = $("<div></div>").text(message).addClass("chat__message chat__message_B");
+        chatbox.append(div);
+      });
+      window.setTimeout(updateChat, 1500);
+     })
   
-      function updateChat() {
-        $.get(room(), function(data) {
-          $("#chatbox").text(data);
-          window.setTimeout(updateChat, 1500);
-        })
-      }
-  
+}
+
       function sendmessage() {
         $.post(room(), $("#inform").serialize() );
       }
@@ -32,21 +41,40 @@
       });
   
     </script>
-    <body>
-      <h1>Chat Room: {{ room }}</h1>
 
-      <form id="inform" action="/api/chat" method="POST">
-        Message:<input name="msg" type=text>
-        <input id="sendBtn" type="button" value="send">
+
+    <body>
+
+      <form id="inform" action="/api/chat" method="POST" class="chat_msg _form-area">
+        
+        <h1 class="_form-title">Chat Room: {{ room }}</h1>
+
+        <div class="user-box">
+          <input type="text"  name="msg" placeholder="Message" class="user-box"><br>
+        </div>
+
+        <div class="user-box">
+          <input id="sendBtn" type="button"  value="send" >
+        </div>
+
+
       </form>
-      <pre id="chatbox">Loading...</pre>0.
-      
-      <br>
-      <br>
-      <a href="/lobby">Back to lobby</a>
-      <br>
-      <br>
-      <a href="/logout">logout</a>
+
+
+      <section class="chat">
+        <div id="chatbox" class="chat__inner">
+
+        </div>
+      </section>
+
+
+      <div class="user-box">
+        <a href="/logout" class="logout">logout</a>
+      </div>
+
+      <div class="user-box">
+        <a href="/lobby" class="logout">Back to lobby</a>
+      </div>
 
     </body>
   </html>
