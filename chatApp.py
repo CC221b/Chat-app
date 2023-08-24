@@ -46,8 +46,6 @@ def register():
             return redirect("login")
     return render_template("register.html")
 
-       
-
 @server.route('/login' , methods=['GET', 'POST'])
 def login():
   if request.method == 'POST':
@@ -61,8 +59,7 @@ def login():
       else:
             return redirect('register')
   return render_template('login.html')
-
-  
+ 
 @server.route('/lobby', methods =["GET", "POST"])
 def room():
    if request.method == 'POST':
@@ -79,8 +76,12 @@ def room():
  
 @server.route("/chat/<room>", methods=["GET", "POST"])
 def chat(room):
-    return render_template("chat.html", room=room)
+    return render_template("chat.html", roomPage=room)
 
+
+@server.route("/logout")
+def logout():
+    return redirect("login")
 
 @server.route("/api/chat/<room>", methods=["GET", "POST"])
 def chat_room(room):
@@ -96,25 +97,6 @@ def chat_room(room):
       room_file.seek(0)
       chat_content = room_file.read()
    return chat_content
-
-# @server.route('/api/chat/<room>', methods=['GET','POST'])
-# def update_chat(room):
-#     room_files_path = "rooms/"
-#     if request.method == 'POST':
-#         message = request.form['msg']
-#         username = session['username']
-
-#         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-#         # Append the message to the room's unique .txt file
-#         with open(f'{room_files_path}{room}.txt', 'a', newline='') as file:
-#             file.write(f'[{timestamp}] {username}: {message}\n')
-            
-#     with open(f'{room_files_path}{room}.txt', 'r' ) as file:
-#         file.seek(0)
-#         messages = file.read()  
-#     return messages.split('\n')
-
 
 if __name__ == "__main__":
    server.run(host='0.0.0.0', debug = True)
