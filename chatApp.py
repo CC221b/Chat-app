@@ -1,9 +1,9 @@
 from flask import Flask,redirect, request, render_template, session
 from flask_session import Session
 import os
-import csv
 import base64
 import datetime
+
 server = Flask(__name__)
 server.config["SESSION_PERMANENT"] = False
 server.config["SESSION_TYPE"] = "filesystem"
