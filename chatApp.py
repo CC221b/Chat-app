@@ -9,7 +9,7 @@ server.config["SESSION_PERMANENT"] = False
 server.config["SESSION_TYPE"] = "filesystem"
 Session(server)
 
-ROOMS_DIR = os.getenv("ROOMS_DIR", "rooms")
+ROOMS_DIR = os.getenv("ROOMS_DIR", "rooms") 
 
 def decode_password(encoded_password):
     decoded_b = base64.b64decode(encoded_password.encode('utf-8'))
@@ -21,7 +21,7 @@ def encode_password(decoded_password):
 
 USERS = {}
 with open("users.csv", "r") as users_file:
-    for line in users_file:
+    for line in users_file: 
         parts = line.strip().split(",", 1)
         if len(parts) == 2:
             username, encoded_password = parts
@@ -36,7 +36,7 @@ def register():
         password = request.form["password"]
         if username not in USERS:
             #encoded_password = encode_password(password)
-            encoded_password = password
+            encoded_password = encode_password(password)
             USERS[username] = encoded_password
             with open("users.csv", "a") as users_file:
                 users_file.write(f"{username},{encoded_password}\n")
@@ -51,9 +51,11 @@ def register():
 @server.route('/login' , methods=['GET', 'POST'])
 def login():
   if request.method == 'POST':
-      name = request.form['username'],
+      name = request.form['username']
       password = request.form['password']
-      if USERS.get(name) == password:
+      encoded_password = encode_password(password)
+      decode_password = decode_password(USERS.get(name))
+      if decode_password == password:
             session["username"] = request.form.get("username")
             return redirect('lobby')
       else:
