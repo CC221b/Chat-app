@@ -12,8 +12,6 @@ server = Flask(__name__)
 #     if decoded_password:
 #        return (decoded_password).encode()
 
-
-
 USERS = {}
 with open("users.csv", "r") as users_file:
     for line in users_file:
@@ -35,7 +33,9 @@ def register():
             USERS[username] = encoded_password
             with open("users.csv", "a") as users_file:
                 users_file.write(f"{username},{encoded_password}\n")
-            render_template("login.html")
+            return redirect("lobby")
+        else:
+            return redirect("login")
     return render_template("register.html")
 
        
@@ -45,14 +45,13 @@ def login():
   if request.method == 'POST':
       name = request.form['username'],
       password = request.form['password']
-      data=[name, password]
-      if read_to_file(data,True):
-         return render_template('lobby.html')
+      if USERS.get(name) == password:
+            return redirect('lobby')
       else:
-         return render_template('register.html')
+            return redirect('register')
+  return render_template('login.html')
+
   
-
-
 @server.route('/lobby', methods =["GET", "POST"])
 def room():
    if request.method == 'POST':
