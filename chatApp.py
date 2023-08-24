@@ -4,13 +4,13 @@ import csv
 import base64
 server = Flask(__name__)
 
-# def decode_password(encoded_password):
-#     if encoded_password:
-#        return (encoded_password).decode()
+def decode_password(encoded_password):
+    decoded_b = base64.b64decode(encoded_password.encode('utf-8'))
+    return decoded_b.decode('utf-8')
 
-# def encode_password(decoded_password):
-#     if decoded_password:
-#        return (decoded_password).encode()
+def encode_password(decoded_password):
+    encoded_b = base64.b64encode(decoded_password.encode('utf-8'))
+    return encoded_b.decode('utf-8')
 
 USERS = {}
 with open("users.csv", "r") as users_file:
@@ -33,7 +33,7 @@ def register():
             USERS[username] = encoded_password
             with open("users.csv", "a") as users_file:
                 users_file.write(f"{username},{encoded_password}\n")
-            return redirect("lobby")
+            return redirect("login")
         else:
             return redirect("login")
     return render_template("register.html")
