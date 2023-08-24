@@ -80,6 +80,11 @@ def chat(room):
     return render_template("chat.html", room=room)
 
 
+@server.route("/logout")
+def logout():
+    return redirect("login")
+
+
 @server.route("/api/chat/<room>", methods=["GET", "POST"])
 def chat_room(room):
    chat_content = ""
