@@ -12,12 +12,18 @@ Session(server)
 ROOMS_DIR = os.getenv("ROOMS_DIR", "rooms") 
 
 def decode_password(encoded_password):
-    decoded_b = base64.b64decode(encoded_password.encode('utf-8'))
-    return decoded_b.decode('utf-8')
+    try:
+        base64_bytes = encoded_password.encode('ascii')
+        message_bytes = base64.b64decode(base64_bytes)
+        return message_bytes.decode('ascii')
+    except:
+        return "Error"
+    
 
 def encode_password(decoded_password):
-    encoded_b = base64.b64encode(decoded_password.encode('utf-8'))
-    return encoded_b.decode('utf-8')
+    message_bytes = decoded_password.encode('ascii')
+    base64_bytes = base64.b64encode(message_bytes)
+    return base64_bytes.decode('ascii')
 
 USERS = {}
 with open("users.csv", "r") as users_file:
@@ -25,8 +31,7 @@ with open("users.csv", "r") as users_file:
         parts = line.strip().split(",", 1)
         if len(parts) == 2:
             username, encoded_password = parts
-            password = encoded_password
-            #password = decode_password(encoded_password)
+            password = decode_password(encoded_password)
             USERS[username] = password
 
 @server.route("/register", methods=["GET", "POST"])
@@ -35,15 +40,13 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         if username not in USERS:
-            #encoded_password = encode_password(password)
             encoded_password = encode_password(password)
-            USERS[username] = encoded_password
+            USERS[username] = password
             with open("users.csv", "a") as users_file:
                 users_file.write(f"{username},{encoded_password}\n")
-            session["username"] = request.form.get("username")
-            return redirect("lobby")
         else:
-            return redirect("login")
+            return "username already exists!!"
+        return redirect("login")
     return render_template("register.html")
 
 @server.route('/login' , methods=['GET', 'POST'])
@@ -51,13 +54,12 @@ def login():
   if request.method == 'POST':
       name = request.form['username']
       password = request.form['password']
-      encoded_password = encode_password(password)
-      decode_password = decode_password(USERS.get(name))
-      if decode_password == password:
-            session["username"] = request.form.get("username")
-            return redirect('lobby')
-      else:
-            return redirect('register')
+      if USERS.get(name):
+           if USERS.get(name) == password:
+                session["username"] = name
+                return redirect('lobby')
+           else:
+                return redirect('register')
   return render_template('login.html')
  
 @server.route('/lobby', methods =["GET", "POST"])
@@ -71,7 +73,11 @@ def room():
              else:
                  with open(room_path, 'w') as f:
                      f.write("welcome")  
-   rooms = os.listdir('rooms/')         
+   rooms_files = os.listdir('rooms/')
+   rooms = []
+   for room in rooms_files:  
+        r = room.split('.')[0]
+        rooms.append(r)      
    return render_template('lobby.html', room_names=rooms)
  
 @server.route("/chat/<room>", methods=["GET", "POST"])

@@ -15,6 +15,7 @@ COPY / .
 
 #Changing the work environment to development
 ENV FLASK_ENV development
+ENV LANG C.UTF-8
 
 # command to run on container start
 CMD [ "python", "./chatApp.py" ]
