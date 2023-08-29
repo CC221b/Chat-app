@@ -9,7 +9,8 @@ server.config["SESSION_PERMANENT"] = False
 server.config["SESSION_TYPE"] = "filesystem"
 Session(server)
 
-ROOMS_DIR = os.getenv("ROOMS_DIR", "rooms") 
+rooms_dir = os.getenv("ROOMS_PATH") 
+users_path = os.getenv("USERS_PATH")
 
 def decode_password(encoded_password):
     try:
@@ -26,7 +27,7 @@ def encode_password(decoded_password):
     return base64_bytes.decode('ascii')
 
 USERS = {}
-with open("users.csv", "r") as users_file:
+with open(users_path, "r") as users_file:
     for line in users_file: 
         parts = line.strip().split(",", 1)
         if len(parts) == 2:
@@ -42,7 +43,7 @@ def register():
         if username not in USERS:
             encoded_password = encode_password(password)
             USERS[username] = password
-            with open("users.csv", "a") as users_file:
+            with open(users_path, "a") as users_file:
                 users_file.write(f"{username},{encoded_password}\n")
         else:
             return "username already exists!!"
@@ -67,7 +68,7 @@ def room():
    if request.method == 'POST':
         new_room = request.form["new_room"] 
         if new_room:
-             room_path = os.path.join(ROOMS_DIR, f"{new_room}.txt")
+             room_path = os.path.join(rooms_dir, f"{new_room}.txt")
              if os.path.isfile(room_path):
                  return "Error in rhe room name!"
              else:
@@ -96,11 +97,11 @@ def chat_room(room):
    if request.method == "POST":
         message = request.form["msg"]
         if message:
-            room_path = os.path.join(ROOMS_DIR, f"{room}")
+            room_path = os.path.join(rooms_dir, f"{room}")
             with open(room_path, "a") as room_file:
                 timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
                 room_file.write(f"{timestamp} {session.get('username')}: {message}\n")
-   with open(os.path.join(ROOMS_DIR, f"{room}"), "r") as room_file:
+   with open(os.path.join(rooms_dir, f"{room}"), "r") as room_file:
       room_file.seek(0)
       chat_content = room_file.read()
    return chat_content
