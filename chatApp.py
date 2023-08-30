@@ -106,6 +106,14 @@ def chat_room(room):
       chat_content = room_file.read()
    return chat_content
 
+
+@server.route("/clear/<room>", methods=["GET", "POST"])
+def clear(room):
+    room_path = os.path.join(rooms_dir, f"{room}")
+    open(room_path, "w").close()
+    return render_template("chat.html", roomPage=room)
+
+
 if __name__ == "__main__":
    server.run(host='0.0.0.0', debug = True)
 
