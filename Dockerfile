@@ -11,11 +11,11 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 ENV FLASK_ENV development
-ENV ROOMS_PATH rooms/
-ENV USERS_PATH users.csv
+ENV ROOMS_PATH='rooms'
+ENV USERS_PATH='users.csv'
 
 # copy the content of the local src directory to the working directory
-COPY / .
+COPY src/ .
 
 # command to run on container start
 CMD [ "python", "./chatApp.py" ]

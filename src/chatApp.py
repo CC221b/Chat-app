@@ -111,7 +111,7 @@ def chat_room(room):
 def clear(room):
     room_path = os.path.join(rooms_dir, f"{room}")
     open(room_path, "w").close()
-    return render_template("chat.html", roomPage=room)
+    return render_template("chat.html")
 
 
 if __name__ == "__main__":
