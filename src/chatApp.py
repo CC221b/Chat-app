@@ -1,25 +1,8 @@
 from flask import Flask,redirect, request, render_template, session
 from flask_session import Session
 import os
-import mysql.connector
 import base64
 import datetime
-import json
-
-def build_db() -> List[Dict]:
-    config = {
-        'user': 'root',
-        'password': 'root',
-        'host': 'db',
-        'port': '3306',
-        'database': 'chat-app-db'
-    }
-    connection = mysql.connector.connect(**config)
-    cursor = connection.cursor()
-    # cursor.execute('SELECT * FROM favorite_colors')
-    # results = [{name: color} for (name, color) in cursor]
-    # cursor.close()
-    # connection.close()
 
 server = Flask(__name__)
 server.config["SESSION_PERMANENT"] = False
@@ -44,8 +27,6 @@ def encode_password(decoded_password):
     return base64_bytes.decode('ascii')
 
 USERS = {}
-cursor.execute('SELECT * FROM users')
-results = [{name: color} for (name, color) in cursor]
 with open(users_path, "r") as users_file:
     for line in users_file: 
         parts = line.strip().split(",", 1)
