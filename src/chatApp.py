@@ -35,7 +35,7 @@ with open(users_path, "r") as users_file:
             password = decode_password(encoded_password)
             USERS[username] = password
 
-@server.route("/register", methods=["GET", "POST"])
+@server.route("/", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form["username"]

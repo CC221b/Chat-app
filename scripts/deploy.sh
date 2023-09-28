@@ -18,7 +18,6 @@ if docker image inspect chatapp:$version > /dev/null 2>&1; then
     read -n 1 rebuild
     echo
 
-
     if [[ "$rebuild" == "y" ]]; then
         # Delete the existing image
         docker rmi chatapp:$version
@@ -56,7 +55,8 @@ echo
 if [[ "$push_to_artifact_registry" == "y" ]]; then
     # Push the image to the Artifact Registry repository
     # Use service account impersonation to authenticate to the Artifact Registry
-    gcloud auth activate-service-account artifact-admin-sa --key-file artifact-admin-sa.json
-    gcloud artifacts repositories list
-    gcloud artifacts repositories add-tag chana-chat-app-images chatapp:$version
+    gcloud config set auth/impersonate_service_account artifact-admin-sa@grunitech-mid-project.iam.gserviceaccount.com
+    gcloud auth configure-docker me-west1-docker.pkg.dev
+    docker tag chatapp:${version} me-west1-docker.pkg.dev/grunitech-mid-project/chana-chat-app-images/chatapp:${version}
+    docker push me-west1-docker.pkg.dev/grunitech-mid-project/chana-chat-app-images/chatapp:${version}
 fi
